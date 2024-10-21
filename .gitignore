@@ -38,5 +38,5 @@ vite.config.ts.timestamp-*
 
 # and uncomment the following lines
 .pnp.*
-
+install-state.gz
 # End of https://www.toptal.com/developers/gitignore/api/yarn
