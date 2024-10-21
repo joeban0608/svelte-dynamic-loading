@@ -1,11 +1,37 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import type { LayoutData } from './$types';
+	import 'tailwindcss/tailwind.css';
 
 	export let data: LayoutData;
-	import 'tailwindcss/tailwind.css';
+	let headerElement: HTMLElement;
+	let headerHeight = 0;
+
+	// 动态获取 header 的高度
+	onMount(() => {
+		// 检查元素是否已挂载，并获取高度
+		if (headerElement) {
+			headerHeight = headerElement.offsetHeight;
+		}
+
+		// 添加窗口 resize 监听器，动态调整高度
+		const handleResize = () => {
+			if (headerElement) {
+				headerHeight = headerElement.offsetHeight;
+			}
+		};
+
+		window.addEventListener('resize', handleResize);
+
+		// 清理事件监听器
+		return () => {
+			window.removeEventListener('resize', handleResize);
+		};
+	});
+	$: console.log('headerHeight', headerHeight);
 </script>
 
-<header class="bg-gray-800 text-white">
+<header bind:this={headerElement} class="bg-gray-800 text-white">
 	<div class="container mx-auto px-4 py-4 flex justify-between items-center">
 		<!-- Logo -->
 		<div class="text-lg font-semibold">
@@ -21,4 +47,8 @@
 		</nav>
 	</div>
 </header>
-<slot />
+
+<!-- 将 header 的高度传递给 slot -->
+<main class="w-full" style="height:calc(100dvh - {headerHeight}px)">
+	<slot />
+</main>
